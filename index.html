@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fingers crossed! 🤞🏾</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 20px;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background-image: url('1.jpg');
+
+    }
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .message {
+      background-color: #fff;
+      padding: 23px;
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    }
+    .options {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: center;
+    }
+    .options button {
+      padding: 10px 20px;
+      background-color: #ae393965;
+      color: black;
+      font-size: 23px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .options button:hover {
+      background-color: #ff4f4f;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    .modal-content {
+      background-color: #e1e1e1;
+      font-size: 23px;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    #modal-close {
+        font-size: 23px;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="message">
+      <h1>Hey Zothando,</h1>
+      <p>As I return next week, I can't help but think about catching a movie together. I'd love to hear your thoughts:</p>
+      <div class="options">
+        <button id="interestedBtn">Count Me In!</button>
+        <button id="notInterestedBtn">Pass ❌</button>
+        <button id="churchOpinionBtn">But Philani, What will the Church say?</button>
+        <button id="idkBtn">I don't know</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <p id="modal-message"></p>
+      <button id="modal-close">Close</button>
+    </div>
+  </div>
+
+  <script>
+    const responseMap = {
+      interestedBtn: "Great choice! A movie it is. 🙂",
+      notInterestedBtn: "No worries. It's totally fine if that's not on your agenda.",
+      churchOpinionBtn: "When it comes to decisions, perspectives flourish like flowers in bloom. While I respect the Church's values, it seems they might not directly apply here. The choice is yours to make. What's your call?\nYou can close and select again",
+      idkBtn: "Indecision is natural. Let me know in due time."
+    };
+
+    const buttons = document.querySelectorAll(".options button");
+    const modal = document.getElementById("modal");
+    const modalMessage = document.getElementById("modal-message");
+    const modalCloseButton = document.getElementById("modal-close");
+
+    buttons.forEach(button => {
+      button.addEventListener("click", async function() {
+        const response = responseMap[this.id];
+        modalMessage.textContent = response;
+        modal.style.display = "flex";
+
+        const formData = new FormData();
+        formData.append("message", response);
+
+        const formSpreeEndpoint = "https://formspree.io/f/xoqodeej";
+
+        try {
+          const formResponse = await fetch(formSpreeEndpoint, {
+            method: "POST",
+            body: formData,
+            headers: {
+              Accept: "application/json"
+            }
+          });
+
+          if (formResponse.ok) {
+            console.log("Form submission successful!");
+          } else {
+            console.error("Form submission failed.");
+          }
+        } catch (error) {
+          console.error("Error submitting form:", error);
+        }
+      });
+    });
+
+    modalCloseButton.addEventListener("click", () => {
+      modal.style.display = "none";
+    });   
+  </script>
+</body>
+</html>
